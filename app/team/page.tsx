@@ -95,18 +95,18 @@ export default function Team() {
     {
       id: 1,
       name: "Rishabh Singh",
-      role: "ChatGPT Boi",
-      description: "Develops and maintains the society's website with AI assistance.",
-      image: "/placeholder.svg?height=300&width=250",
+      role: "Web Developer",
+      description: "Develops and maintains the society's website.",
+      image: "/images/DSC06934.jpg",
       linkedin: "https://www.linkedin.com/in/rishabh-singh-514b8628a/",
     },
     {
       id: 2,
-      name: "Tejasvi Yadav",
-      role: "Contributor",
-      description: "Contributes to the development and maintenance of the society's website.",
-      image: "/placeholder.svg?height=300&width=250",
-      linkedin: "#",
+      name: "Kaustubh",
+      role: "Web Developer",
+      description: "Develops and maintains the society's website.",
+      image: "/images/meh.jpg",
+      linkedin: "https://www.linkedin.com/in/kaustubh-mishra-6603b8329/",
     },
   ]
 
