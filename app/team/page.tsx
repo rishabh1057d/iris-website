@@ -2,7 +2,6 @@
 
 import { useState, useRef } from "react"
 import Navbar from "@/components/navbar"
-import Footer from "@/components/footer"
 import Link from "next/link"
 import { ChevronDown, ChevronUp, Linkedin } from "lucide-react"
 import { motion, AnimatePresence, useInView } from "framer-motion"
@@ -65,7 +64,7 @@ export default function Team() {
       name: "Kaustubh",
       role: "Design Head",
       description: "Leads the design team and creates visual content.",
-      image: "/placeholder.svg?height=300&width=250",
+      image: "/images/meh.jpg",
     },
     {
       id: 3,
@@ -99,14 +98,6 @@ export default function Team() {
       description: "Develops and maintains the society's website.",
       image: "/images/DSC06934.jpg",
       linkedin: "https://www.linkedin.com/in/rishabh-singh-514b8628a/",
-    },
-    {
-      id: 2,
-      name: "Kaustubh",
-      role: "Web Developer",
-      description: "Develops and maintains the society's website.",
-      image: "/images/meh.jpg",
-      linkedin: "https://www.linkedin.com/in/kaustubh-mishra-6603b8329/",
     },
   ]
 
@@ -195,7 +186,7 @@ export default function Team() {
       name: "Kaustubh",
       role: "Contributor",
       description: "Contributed to the website development.",
-      image: "/placeholder.svg?height=300&width=250",
+      image: "/images/meh.jpg",
     },
   ]
 
@@ -220,36 +211,42 @@ export default function Team() {
   }
 
   // Render team member card
-  const TeamMemberCard = ({ member }: { member: TeamMember }) => (
+  const TeamMemberCard = ({ member, isCompact = false }: { member: TeamMember; isCompact?: boolean }) => (
     <motion.div
-      className="team-card bg-gray-800 bg-opacity-50 rounded-lg overflow-hidden p-4 flex flex-col items-center"
+      className={`team-card bg-gray-800 bg-opacity-50 rounded-lg overflow-hidden p-4 flex flex-col items-center ${
+        isCompact ? "max-w-xs mx-auto" : ""
+      }`}
       variants={itemVariants}
       whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
     >
-      <div className="w-full mb-4">
+      <div className={`w-full mb-3 ${isCompact ? "max-w-[200px]" : ""}`}>
         <ResponsiveImage
           src={member.image || "/placeholder.svg"}
           alt={`${member.name} - ${member.role}`}
-          width={300}
-          height={300}
+          width={isCompact ? 200 : 300}
+          height={isCompact ? 200 : 300}
           aspectRatio="1/1"
           isTeamMember={true}
           className="rounded-lg"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
+          sizes={
+            isCompact ? "(max-width: 768px) 200px, 200px" : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
+          }
           priority={false}
           quality={90}
         />
       </div>
-      <h3 className="text-xl font-bold mb-1 text-center">{member.name}</h3>
-      <p className="text-blue-300 mb-2 text-center">{member.role}</p>
-      <p className="text-gray-400 text-sm text-center mb-4 flex-grow">{member.description}</p>
+      <h3 className={`font-bold mb-1 text-center ${isCompact ? "text-lg" : "text-xl"}`}>{member.name}</h3>
+      <p className={`text-blue-300 mb-2 text-center ${isCompact ? "text-sm" : ""}`}>{member.role}</p>
+      <p className={`text-gray-400 text-center mb-3 flex-grow ${isCompact ? "text-xs" : "text-sm"}`}>
+        {member.description}
+      </p>
       <Link
         href={member.linkedin || "#"}
         target={member.linkedin ? "_blank" : "_self"}
         aria-label={`${member.name}'s LinkedIn`}
         className="text-blue-400 hover:text-blue-300 transition-colors duration-200"
       >
-        <Linkedin className="w-5 h-5" />
+        <Linkedin className={`${isCompact ? "w-4 h-4" : "w-5 h-5"}`} />
       </Link>
     </motion.div>
   )
@@ -312,7 +309,7 @@ export default function Team() {
           ))}
         </motion.div>
 
-        {/* Web Dev Team */}
+        {/* Web Dev Team - Compact Version */}
         <motion.h2
           ref={webDevRef}
           className="text-2xl font-bold mb-8 text-center"
@@ -323,13 +320,13 @@ export default function Team() {
           Web Dev Team
         </motion.h2>
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto mb-16"
+          className="flex justify-center mb-16"
           variants={containerVariants}
           initial="hidden"
           animate={isWebDevInView ? "visible" : "hidden"}
         >
           {webDevTeam.map((member) => (
-            <TeamMemberCard key={member.id} member={member} />
+            <TeamMemberCard key={member.id} member={member} isCompact={true} />
           ))}
         </motion.div>
 
@@ -439,7 +436,6 @@ export default function Team() {
           )}
         </AnimatePresence>
       </div>
-      <Footer />
     </main>
   )
 }

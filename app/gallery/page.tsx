@@ -5,6 +5,7 @@ import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import Image from "next/image"
 import { motion, useInView, useScroll, useTransform } from "framer-motion"
+import { useMemo } from "react"
 
 export default function Gallery() {
   const titleRef = useRef<HTMLHeadingElement>(null)
@@ -56,9 +57,11 @@ export default function Gallery() {
   }
 
   // Calculate individual item Y transforms outside the map function
-  const itemYTransforms = galleryItems.map((item, index) =>
-    useTransform(scrollYProgress, [0, 1], [index % 2 === 0 ? 100 : 50, index % 2 === 0 ? -50 : -100]),
-  )
+  const itemYTransforms = useMemo(() => {
+    return galleryItems.map((item, index) =>
+      useTransform(scrollYProgress, [0, 1], [index % 2 === 0 ? 100 : 50, index % 2 === 0 ? -50 : -100]),
+    )
+  }, [scrollYProgress, galleryItems])
 
   return (
     <main className="flex min-h-screen flex-col items-center relative">

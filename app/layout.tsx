@@ -2,10 +2,10 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
-import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
+import Navbar from "@/components/navbar"
 import { CustomCursor } from "@/components/custom-cursor"
 import { InteractiveBackground } from "@/components/interactive-background"
+import ScrollProgress from "@/components/scroll-progress"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -32,12 +32,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
-        <div className="relative min-h-screen">
+        <div className="relative min-h-screen flex flex-col">
           <InteractiveBackground />
           <CustomCursor />
+          <ScrollProgress />
           <Navbar />
-          <main className="relative z-10">{children}</main>
-          <Footer />
+          <main className="relative z-10 flex-1">{children}</main>
         </div>
       </body>
     </html>
