@@ -6,7 +6,6 @@ import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { CustomCursor } from "@/components/custom-cursor"
 import { InteractiveBackground } from "@/components/interactive-background"
-import { AuthProvider } from "@/contexts/auth-context"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -33,15 +32,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
-        <AuthProvider>
-          <div className="relative min-h-screen">
-            <InteractiveBackground />
-            <CustomCursor />
-            <Navbar />
-            <main className="relative z-10">{children}</main>
-            <Footer />
-          </div>
-        </AuthProvider>
+        <div className="relative min-h-screen">
+          <InteractiveBackground />
+          <CustomCursor />
+          <Navbar />
+          <main className="relative z-10">{children}</main>
+          <Footer />
+        </div>
       </body>
     </html>
   )

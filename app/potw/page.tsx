@@ -1,13 +1,11 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef } from "react"
 import Image from "next/image"
-import Link from "next/link"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { ChevronLeft, ChevronRight, Instagram, X } from "lucide-react"
 import { motion, AnimatePresence, useInView } from "framer-motion"
-import { trackPOTWClick, getPOTWClicksForCurrentMonth } from "@/utils/supabase/potw-tracking"
 
 // Weekly photo type
 type WeeklyPhoto = {
@@ -25,7 +23,7 @@ export default function POTW() {
   const [selectedMonth, setSelectedMonth] = useState("January")
   const [selectedPhoto, setSelectedPhoto] = useState<WeeklyPhoto | null>(null)
   const [showModal, setShowModal] = useState(false)
-  const [clickCount, setClickCount] = useState<number | null>(null)
+  // Removed click tracking functionality - will be re-added with database later
 
   const titleRef = useRef<HTMLHeadingElement>(null)
   const descRef = useRef<HTMLParagraphElement>(null)
@@ -192,24 +190,10 @@ export default function POTW() {
     "December",
   ]
 
-  useEffect(() => {
-    const fetchClickCount = async () => {
-      const count = await getPOTWClicksForCurrentMonth()
-      setClickCount(count)
-    }
-
-    fetchClickCount()
-  }, [])
-
   const handlePhotoClick = async (photo: WeeklyPhoto) => {
     setSelectedPhoto(photo)
     setShowModal(true)
-
-    // Track the click
-    const updatedData = await trackPOTWClick()
-    if (updatedData) {
-      setClickCount(updatedData.count)
-    }
+    // Removed database click tracking - will be re-added later
   }
 
   const handlePrevMonth = () => {
@@ -318,19 +302,7 @@ export default function POTW() {
           </motion.button>
         </motion.div>
 
-        <div className="flex justify-between items-center mb-4">
-          <div></div> {/* Empty div for flex spacing */}
-          {clickCount !== null && (
-            <motion.div
-              className="text-sm text-gray-400"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              Views this month: {clickCount}
-            </motion.div>
-          )}
-        </div>
+        {/* Removed click count display - will be re-added with database */}
 
         <AnimatePresence mode="wait">
           <motion.div
@@ -384,7 +356,7 @@ export default function POTW() {
         </AnimatePresence>
       </div>
 
-      {/* Modal for photo details - Refined to maintain aspect ratio */}
+      {/* Modal for photo details */}
       <AnimatePresence>
         {showModal && selectedPhoto && (
           <motion.div
@@ -469,9 +441,7 @@ export default function POTW() {
                     transition={{ duration: 0.5, delay: 0.5 }}
                     className="flex items-center gap-2"
                   >
-                    <Link href="#" className="text-gray-400 hover:text-pink-500 transition-colors">
-                      <Instagram className="w-5 h-5" />
-                    </Link>
+                    <Instagram className="w-5 h-5 text-gray-400" />
                     <span className="text-gray-400 text-sm">Follow on Instagram</span>
                   </motion.div>
                 </div>
