@@ -5,7 +5,7 @@ import { motion, useMotionValue } from "framer-motion"
 
 type CursorVariant = "default" | "button" | "text" | "image" | "link"
 
-export default function CustomCursor() {
+export function CustomCursor() {
   const [cursorVariant, setCursorVariant] = useState<CursorVariant>("default")
   const [isVisible, setIsVisible] = useState(false)
 
@@ -173,3 +173,5 @@ export default function CustomCursor() {
     </>
   )
 }
+
+export default CustomCursor

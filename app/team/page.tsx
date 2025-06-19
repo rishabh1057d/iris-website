@@ -3,10 +3,10 @@
 import { useState, useRef } from "react"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
-import Image from "next/image"
 import Link from "next/link"
 import { ChevronDown, ChevronUp, Linkedin } from "lucide-react"
 import { motion, AnimatePresence, useInView } from "framer-motion"
+import ResponsiveImage from "@/components/responsive-image"
 
 // Team member type
 type TeamMember = {
@@ -86,7 +86,7 @@ export default function Team() {
       name: "Swapnil Acharya",
       role: "Outreach",
       description: "Works on expanding the society's reach and impact.",
-      image: "/placeholder.svg?height=300&width=250",
+      image: "/images/swapnil-acharya.jpg",
     },
   ]
 
@@ -226,23 +226,28 @@ export default function Team() {
       variants={itemVariants}
       whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
     >
-      <div className="w-full h-64 mb-4 overflow-hidden rounded-lg">
-        <Image
+      <div className="w-full mb-4">
+        <ResponsiveImage
           src={member.image || "/placeholder.svg"}
-          alt={member.name}
-          width={250}
+          alt={`${member.name} - ${member.role}`}
+          width={300}
           height={300}
-          className="w-full h-full object-cover"
+          aspectRatio="1/1"
+          isTeamMember={true}
+          className="rounded-lg"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
+          priority={false}
+          quality={90}
         />
       </div>
-      <h3 className="text-xl font-bold mb-1">{member.name}</h3>
-      <p className="text-blue-300 mb-2">{member.role}</p>
-      <p className="text-gray-400 text-sm text-center mb-4">{member.description}</p>
+      <h3 className="text-xl font-bold mb-1 text-center">{member.name}</h3>
+      <p className="text-blue-300 mb-2 text-center">{member.role}</p>
+      <p className="text-gray-400 text-sm text-center mb-4 flex-grow">{member.description}</p>
       <Link
         href={member.linkedin || "#"}
         target={member.linkedin ? "_blank" : "_self"}
         aria-label={`${member.name}'s LinkedIn`}
-        className="text-blue-400 hover:text-blue-300"
+        className="text-blue-400 hover:text-blue-300 transition-colors duration-200"
       >
         <Linkedin className="w-5 h-5" />
       </Link>

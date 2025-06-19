@@ -1,23 +1,35 @@
 "use client"
 
+import type React from "react"
+
 import { useEffect, useRef, useState, useCallback } from "react"
-import Image from "next/image"
 import Link from "next/link"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
-import LazyBackgroundLoader from "@/components/lazy-background-loader"
+import ResponsiveContainer from "@/components/responsive-container"
+import ResponsiveImage from "@/components/responsive-image"
+import ErrorBoundary from "@/components/error-boundary"
+import RedirectHandler from "@/components/redirect-handler"
 import { motion, useAnimation, useInView, useScroll, useTransform } from "framer-motion"
-import { useAuth } from "@/contexts/auth-context"
 
 export default function Home() {
   const [scrollY, setScrollY] = useState(0)
+  const [isRedirecting, setIsRedirecting] = useState(false)
   const heroRef = useRef<HTMLDivElement>(null)
   const logoRef = useRef<HTMLDivElement>(null)
   const potwRef = useRef<HTMLDivElement>(null)
   const isPotwInView = useInView(potwRef, { once: false, margin: "-100px 0px" })
   const controls = useAnimation()
   const [isReducedMotion, setIsReducedMotion] = useState(false)
-  const { user, isAuthorized } = useAuth()
+
+  const GOOGLE_FORM_URL =
+    "https://docs.google.com/forms/d/e/1FAIpQLSczSzMGIAd-sE_nxe9wOFSrsYy59lzRBhU9e5uhOjMtmIquLQ/viewform"
+
+  // Handle Join Now click
+  const handleJoinNowClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    setIsRedirecting(true)
+  }
 
   // Check for reduced motion preference
   useEffect(() => {
@@ -171,148 +183,171 @@ export default function Home() {
   }
 
   return (
-    <main ref={mainRef} className="flex min-h-screen flex-col items-center relative overflow-hidden">
-      <Navbar />
-      <LazyBackgroundLoader />
+    <ErrorBoundary>
+      {/* Redirect Handler */}
+      <RedirectHandler
+        isRedirecting={isRedirecting}
+        targetUrl={GOOGLE_FORM_URL}
+        onComplete={() => setIsRedirecting(false)}
+      />
 
-      {/* Hero section */}
-      <div
-        ref={heroRef}
-        className="min-h-screen w-full flex flex-col items-center justify-center text-center px-4 relative z-10"
-      >
-        {/* Logo with optimized animations */}
-        <motion.div
-          ref={logoRef}
-          variants={logoVariants}
-          initial="initial"
-          animate="animate"
-          whileHover="hover"
-          style={{ scale: logoScale, opacity: logoOpacity, y: logoY }}
-          className="mb-8 cursor-pointer hardware-accelerated will-change-transform"
+      <main ref={mainRef} className="flex min-h-screen flex-col items-center relative overflow-hidden">
+        <Navbar />
+
+        {/* Hero section */}
+        <div
+          ref={heroRef}
+          className="min-h-screen w-full flex flex-col items-center justify-center text-center safe-area-inset-top relative z-10"
         >
-          <Image
-            src="/images/logo.png"
-            alt="IRIS Society Logo"
-            width={240}
-            height={240}
-            className="mx-auto filter drop-shadow-lg"
-            priority
-          />
-        </motion.div>
-
-        <motion.h1
-          variants={textVariants}
-          initial="hidden"
-          animate="visible"
-          style={{ y: titleY }}
-          className="text-4xl md:text-5xl font-bold mb-4 text-white drop-shadow-lg will-change-transform"
-        >
-          IRIS Society
-        </motion.h1>
-
-        <motion.p
-          variants={textVariants}
-          initial="hidden"
-          animate="visible"
-          style={{ y: subtitleY }}
-          transition={{ delay: 0.2 }}
-          className="text-lg md:text-xl text-gray-300 mb-10 max-w-lg will-change-transform"
-        >
-          Through Our Lenses, Beyond the Ordinary
-        </motion.p>
-
-        {/* Enhanced CTA buttons with distinct styles */}
-        <motion.div className="cta-container" variants={buttonVariants} initial="hidden" animate="visible">
-          {user && isAuthorized ? (
-            <motion.div whileHover="hover" className="will-change-transform">
-              <Link href="/dashboard" className="btn-primary">
-                <span className="relative z-10">Go to Dashboard</span>
-              </Link>
-            </motion.div>
-          ) : (
-            <>
-              <motion.div whileHover="hover" className="will-change-transform">
-                <Link href="/join" className="btn-primary">
-                  <span className="relative z-10">Join Now</span>
-                </Link>
-              </motion.div>
-
-              <motion.div whileHover="hover" className="will-change-transform">
-                <Link href="/auth/signin" className="btn-secondary">
-                  <span className="relative z-10">Sign In</span>
-                </Link>
-              </motion.div>
-            </>
-          )}
-        </motion.div>
-      </div>
-
-      {/* Improved transition element */}
-      <div className="w-full relative">
-        <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-transparent via-blue-900/20 to-blue-900/40 transform -translate-y-64"></div>
-        <div className="w-full h-32 bg-gradient-to-b from-transparent to-blue-900/30"></div>
-      </div>
-
-      {/* Photo of the Week Section with seamless transition */}
-      <motion.div
-        ref={potwRef}
-        variants={potwVariants}
-        initial="hidden"
-        animate={controls}
-        className="w-full max-w-6xl mx-auto py-20 px-6 relative z-10 bg-gradient-to-b from-blue-900/30 to-transparent rounded-3xl"
-      >
-        <motion.h2
-          className="text-3xl md:text-4xl font-bold text-center mb-12"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isPotwInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6 }}
-        >
-          Photo of the Week
-        </motion.h2>
-
-        <div className="flex flex-col md:flex-row gap-8 items-center">
-          <motion.div
-            className="md:w-1/2 hardware-accelerated"
-            initial={{ opacity: 0, x: -50 }}
-            animate={isPotwInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <div className="glass-card">
-              <Image
-                src="/images/week1.jpeg"
-                alt="Photo of the Week"
-                width={600}
-                height={400}
-                className="rounded-lg w-full h-auto object-cover max-h-[600px] shadow-lg"
+          <ResponsiveContainer size="lg" padding="lg">
+            {/* Logo with optimized animations */}
+            <motion.div
+              ref={logoRef}
+              variants={logoVariants}
+              initial="initial"
+              animate="animate"
+              whileHover="hover"
+              style={{ scale: logoScale, opacity: logoOpacity, y: logoY }}
+              className="mb-8 cursor-pointer hardware-accelerated will-change-transform"
+            >
+              <ResponsiveImage
+                src="/images/logo.png"
+                alt="IRIS Society Logo"
+                width={240}
+                height={240}
+                priority
+                className="mx-auto filter drop-shadow-lg max-w-[180px] sm:max-w-[200px] md:max-w-[240px]"
+                aspectRatio="1/1"
               />
-            </div>
-          </motion.div>
+            </motion.div>
 
-          <motion.div
-            className="md:w-1/2 space-y-4 hardware-accelerated"
-            initial={{ opacity: 0, x: 50 }}
-            animate={isPotwInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            <div className="glass-card p-6">
-              <h3 className="text-2xl font-bold">Priya Sharma</h3>
-              <p className="text-gray-400">24f1002346@ds.study.iitm.ac.in</p>
-              <p className="text-gray-300">Theme: "Nature's Patterns"</p>
-              <p className="text-gray-300">
-                This beautiful butterfly was captured during early morning at the campus garden. The intricate patterns
-                on its wings showcase nature's artistic precision.
-              </p>
-              <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }} className="mt-4">
-                <Link href="/potw" className="btn-primary inline-block">
-                  View All Weekly Photos
-                </Link>
+            <motion.h1
+              variants={textVariants}
+              initial="hidden"
+              animate="visible"
+              style={{ y: titleY }}
+              className="text-responsive font-bold mb-4 text-white drop-shadow-lg will-change-transform"
+              style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}
+            >
+              IRIS Society
+            </motion.h1>
+
+            <motion.p
+              variants={textVariants}
+              initial="hidden"
+              animate="visible"
+              style={{ y: subtitleY }}
+              transition={{ delay: 0.2 }}
+              className="text-responsive text-gray-300 mb-2 max-w-lg mx-auto will-change-transform"
+              style={{ fontSize: "clamp(1rem, 3vw, 1.25rem)" }}
+            >
+              Photography & Videography Society of IITM BS Degree
+            </motion.p>
+
+            <motion.p
+              variants={textVariants}
+              initial="hidden"
+              animate="visible"
+              style={{ y: subtitleY }}
+              transition={{ delay: 0.3 }}
+              className="text-responsive text-gray-400 mb-10 max-w-lg mx-auto will-change-transform italic"
+              style={{ fontSize: "clamp(0.875rem, 2.5vw, 1.125rem)" }}
+            >
+              Through Our Lenses, Beyond the Ordinary
+            </motion.p>
+
+            {/* Enhanced CTA buttons with distinct styles */}
+            <motion.div
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full max-w-md mx-auto"
+              variants={buttonVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <motion.div whileHover="hover" className="will-change-transform w-full sm:w-auto">
+                <button onClick={handleJoinNowClick} className="btn-primary w-full sm:w-auto" disabled={isRedirecting}>
+                  <span className="relative z-10">{isRedirecting ? "Redirecting..." : "Join Now"}</span>
+                </button>
+              </motion.div>
+            </motion.div>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Improved transition element */}
+        <div className="w-full relative">
+          <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-transparent via-blue-900/20 to-blue-900/40 transform -translate-y-64"></div>
+          <div className="w-full h-32 bg-gradient-to-b from-transparent to-blue-900/30"></div>
+        </div>
+
+        {/* Photo of the Week Section with seamless transition */}
+        <motion.div
+          ref={potwRef}
+          variants={potwVariants}
+          initial="hidden"
+          animate={controls}
+          className="w-full relative z-10 bg-gradient-to-b from-blue-900/30 to-transparent"
+        >
+          <ResponsiveContainer size="xl" padding="lg" className="py-20">
+            <motion.h2
+              className="text-responsive font-bold text-center mb-12"
+              style={{ fontSize: "clamp(1.875rem, 4vw, 2.5rem)" }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={isPotwInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.6 }}
+            >
+              Photo of the Week
+            </motion.h2>
+
+            <div className="flex flex-col lg:flex-row gap-8 items-center">
+              <motion.div
+                className="w-full lg:w-1/2 hardware-accelerated"
+                initial={{ opacity: 0, x: -50 }}
+                animate={isPotwInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
+                <div className="glass-card">
+                  <ResponsiveImage
+                    src="/images/week1.jpeg"
+                    alt="Photo of the Week - Nature's Patterns by Priya Sharma"
+                    width={600}
+                    height={400}
+                    className="rounded-lg w-full shadow-lg"
+                    aspectRatio="4/3"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                </div>
+              </motion.div>
+
+              <motion.div
+                className="w-full lg:w-1/2 space-y-4 hardware-accelerated"
+                initial={{ opacity: 0, x: 50 }}
+                animate={isPotwInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+              >
+                <div className="glass-card p-6">
+                  <h3 className="text-responsive font-bold" style={{ fontSize: "clamp(1.25rem, 3vw, 1.5rem)" }}>
+                    Priya Sharma
+                  </h3>
+                  <p className="text-gray-400 text-responsive break-all sm:break-normal">
+                    24f1002346@ds.study.iitm.ac.in
+                  </p>
+                  <p className="text-gray-300 text-responsive">Theme: "Nature's Patterns"</p>
+                  <p className="text-gray-300 text-responsive">
+                    This beautiful butterfly was captured during early morning at the campus garden. The intricate
+                    patterns on its wings showcase nature's artistic precision.
+                  </p>
+                  <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }} className="mt-4">
+                    <Link href="/potw" className="btn-primary inline-block w-full sm:w-auto text-center">
+                      View All Weekly Photos
+                    </Link>
+                  </motion.div>
+                </div>
               </motion.div>
             </div>
-          </motion.div>
-        </div>
-      </motion.div>
+          </ResponsiveContainer>
+        </motion.div>
 
-      <Footer />
-    </main>
+        <Footer />
+      </main>
+    </ErrorBoundary>
   )
 }

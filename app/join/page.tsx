@@ -9,7 +9,8 @@ export default function Join() {
         <div className="text-center mb-8">
           <Image src="/images/logo.png" alt="IRIS Society Logo" width={120} height={120} className="mx-auto mb-4" />
           <h1 className="text-3xl md:text-4xl font-bold mb-2">Join IRIS Society</h1>
-          <p className="text-gray-300">Become a part of our photography community</p>
+          <p className="text-gray-300 mb-2">Photography & Videography Society of IITM BS Degree</p>
+          <p className="text-gray-400">Become a part of our creative community</p>
         </div>
 
         <div className="bg-gray-800 bg-opacity-50 rounded-lg p-6 max-w-xl mx-auto">
@@ -169,9 +170,9 @@ export default function Join() {
             <div className="flex items-start">
               <input type="checkbox" id="acknowledgment" className="mt-1 mr-2" required />
               <label htmlFor="acknowledgment" className="text-sm text-gray-300">
-                I acknowledge that I have read and understood the rules and regulations of the IRIS Photography Club and
-                agree to abide by them. I understand that failure to comply with these rules may result in the
-                revocation of my membership.
+                I acknowledge that I have read and understood the rules and regulations of the IRIS Photography &
+                Videography Society and agree to abide by them. I understand that failure to comply with these rules may
+                result in the revocation of my membership.
               </label>
             </div>
 
